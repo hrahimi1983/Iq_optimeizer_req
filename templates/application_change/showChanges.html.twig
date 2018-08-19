@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div id="myModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form)}}
+        <a id="remove" class="btn btn-danger" href="#" )>Remove</a>
+        <a class="btn btn-info" href="#" onclick="cancel()" >cancel</a>
+    </div>
+</div>
+ <div id="list" class="col-sm-12">
+
+    <a id="myBtn" class="btn btn-success col-sm-4" href="#" onclick="savenew({{  app_id }})">Add New Change </a>
+    {% for app in app_changes  %}
+        <div id="{{  app.id }}" class="row">
+            <div class="col-sm-12">
+                <img class="comment-img rounded-circle" src="{{ asset('images/alien-profile.png') }}">
+                <div class="comment-container d-inline-block pl-3 align-top">
+                     <span class="commenter-name">
+                             <a href="#" onclick="showDetails({{  app.id }})">{{ app.title }}</a>
+                             At {{ app.created|date("Y-m-d H:i:s") }}</span>
+                    <a onclick="fast_del({{  app.id }},this)" href="#" class="btn btn-danger"> Remove </a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+     <a class="col-sm-4 btn btn-info" href="{{ path('application') }}">Back</a>
+</div>
+ {%  endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script language = "javascript"
+            src = "https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script language = "javascript">
+//this shows a singe change and give the possibility to edit it
+// shows edit form and makes it editable
+// retrieves data by Ajax call
+     function showDetails(id){
+         open_window();
+            $.ajax({
+                url:        '/application/chang/ajax/'+id,
+                type:       'POST',
+                dataType:   'json',
+                async:      true,
+                success: function(data, status) {
+                    var a = document.getElementById('remove'); //or grab it by tagname etc
+                    a.href = '/applicationChange/del/'+data['id']+'/'+data['app_id'];
+                    $('#form_Title').val(data['title']);
+                    $('#form_Description').val(data['description']);
+                    $('#form_AuthId').val(data['auth_id']);
+                    $('#form_created').val(data['created']['date']);
+                    $('#form_updated').val(data['updated']['date']);
+                    $('#form_save').val(data['id']);
+                },
+                error : function(xhr, textStatus, errorThrown) {
+                    alert('Ajax request failed.');
+                }
+            });
+     }
+// Ajax deletes a record
+     function fast_del(id){
+         $.ajax({
+             url:        '/application/fast_del/ajax/'+id,
+             type:       'POST',
+             dataType:   'json',
+             async:      true,
+             success: function(data, status) {
+                 var parent = document.getElementById("list");
+                 var child = document.getElementById(id);
+                 parent.removeChild(child);
+             },
+             error : function(xhr, textStatus, errorThrown) {
+                 alert('Ajax request failed.');
+             }
+
+         });
+     }
+// closes the edit window
+     function cancel() {
+         $("form").trigger('reset');
+         close_window();
+     }
+// opens the form to add new change to the applications changelog
+     function savenew(app_id) {
+         open_window();
+         $("form").trigger('reset');
+         $('#remove').hide();
+         $('#form_Title').prop('disabled', false);
+         $('#form_Description').prop('disabled', false);
+         $('#form_AuthId').prop('disabled', false);
+         $('#form_save').prop('disabled', false);
+         $('#form_save').prop('value', 0);
+     }
+  </script>
+{% endblock %}
