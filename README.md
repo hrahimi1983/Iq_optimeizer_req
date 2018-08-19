@@ -69,7 +69,7 @@ For user convenience, the changlog should be loaded and updated using json/ajax.
 5.run bin/console doctrine:database:create to create database
 6.run bin/console doctrine:migration:migrate
 7.run bin/console server:run
-8: go to your browser and address to :http://app.local:8000/
+8. go to your browser and address to :http://app.local:8000/
 
 
 
