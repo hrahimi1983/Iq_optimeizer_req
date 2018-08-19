@@ -62,7 +62,7 @@ For user convenience, the changlog should be loaded and updated using json/ajax.
 # installation:
 1. clone the code
 2. go to dir cd iq_optimeizer_req/
-3. run composer install to install all dependencies 
+3. run "composer install" to install all dependencies 
 4. set database config in .env 
       DATABASE_URL=mysql://root:@127.0.0.1:3306/app_manager
 
